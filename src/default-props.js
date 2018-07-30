@@ -23,6 +23,7 @@ var defaultProps = {
     infinite: true,
     initialSlide: 0,
     lazyLoad: false,
+    extraCardsTopreloadIfLazyLoad: 0,
     pauseOnHover: true,
     responsive: null,
     rtl: false,
