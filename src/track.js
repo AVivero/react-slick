@@ -61,6 +61,18 @@ var renderSlides = function (spec) {
   var postCloneSlides = [];
   var count = React.Children.count(spec.children);
 
+  /**
+   * in case of lazyLoad add extraCardsToPreloadWhenLazyLoading to the lazyLoadedList
+   */
+  if(spec.extraCardsToPreloadWhenLazyLoading > 0) {
+    let extraCardsToPreload = spec.extraCardsToPreloadWhenLazyLoading;
+    let nextCardToLoad = spec.currentSlide + 1;
+    while(extraCardsToPreload > 0) {
+      spec.lazyLoadedList[nextCardToLoad] = nextCardToLoad;
+      nextCardToLoad++;
+      extraCardsToPreload--;
+    }
+  }
 
   React.Children.forEach(spec.children, (elem, index) => {
     let child;
@@ -70,10 +82,15 @@ var renderSlides = function (spec) {
       slidesToScroll: spec.slidesToScroll,
       currentSlide: spec.currentSlide
     };
-
-    if (!spec.lazyLoad | (spec.lazyLoad && spec.lazyLoadedList.indexOf(index) >= 0)) {
+    
+    /**
+     * in case of lazyLoad, whether or not we want to fetch the slide
+     */
+    if(!spec.lazyLoad || 
+        (spec.lazyLoad && spec.lazyLoadedList.includes(index))) {
       child = elem;
-    } else {
+    }
+    else {
       child = (<div></div>);
     }
     var childStyle = getSlideStyle(assign({}, spec, {index: index}));
